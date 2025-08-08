@@ -22,7 +22,7 @@ Clone this code repo:
 
 ```bash
 cd </your/project/path>
-git clone https://github.com/ollama_REPACSS
+git clone https://github.com/nsfcac/ollama_repacss.git
 cd ollama_REPACSS
 ```
 
