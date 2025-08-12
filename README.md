@@ -33,22 +33,27 @@ interactive -p h100 -t 02:00:00 -g 1
 
 ---
 
-### Step 2: Clone the Helper Repository
+### Step 2: Clone the Ollama_repacss Repository
 
-Clone this repository to your project space:
+Clone this repository to your project space. On REPACSS, we suggest you to use home directory.
+
+we are using ollama 0.6.8 in this version:
 
 ```bash
+cd $HOME
 cd <your_project>
 git clone https://github.com/nsfcac/ollama_repacss.git
 cd ollama_repacss
 ```
 
-### Step 3: Pull the Ollama Container Image
+### Step 3:Download ollama and Configure Environment
 
-Download a specific version of the Ollama container from DockerHub:
+First, Please download the ollama (we suggest to use ollama 0.6.8 version for now) and then set SCRATCH_BASE environment variable:
 
 ```bash
-apptainer pull ollama_0312.sif docker://ollama/ollama:0.3.12
+apptainer pull ollama.sif docker://ollama/ollama:0.6.8
+
+export SCRATCH_BASE=/mnt/<Your Group Name>/home/$USER
 ```
 
 ---
@@ -58,30 +63,34 @@ apptainer pull ollama_0312.sif docker://ollama/ollama:0.3.12
 This sets up a wrapper function to easily start the Ollama server and issue commands:
 
 ```bash
-chmod +x setup_ollama.sh
-./setup_ollama.sh
-```
-
----
-
-### Step 6: Use Ollama
-
-Ollama server has been launched in the background:
-
-```bash
 source ollama.sh
 ```
 
 ---
 
-### Step 7: Pull a Model
+### Step 5: Launch Ollama sever:
 
-Choose a model supported by Ollama and pull it. Example:
+Ollama server has been launched in the background:
+
+```bash
+ollama serve &
+```
+
+---
+
+### Step 7: We are using a shared LLM directory on REPACSS. 
+
+Check the model list first and use the existing models:
+```bash
+ollama list
+ollama run falcon3:1b
+```
+
+if you want to use a new model, please choose a model supported by Ollama and pull it. Example:
 
 ```bash
 ollama pull llama3.1:8b
 ```
-
 ---
 
 ### Step 8: Run Inference
