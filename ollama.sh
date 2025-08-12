@@ -17,6 +17,16 @@ ollama() {
   PORT_FILE="${S}/port.txt"
   HOST_FILE="${S}/host.txt"
 
+  # NEW: Check for shared models directory, prioritize if available
+  SHARED_MODELS="/mnt/SHARED-AREA/ollama_models"
+  if [ -d "$SHARED_MODELS" ] && [ "$(ls -A "$SHARED_MODELS")" ]; then
+    OLLAMA_MODELS="$SHARED_MODELS"
+    echo "Using shared models directory: $OLLAMA_MODELS"
+  else
+    OLLAMA_MODELS="${S}/models"
+    echo "Using user models directory: $OLLAMA_MODELS"
+  fi
+
   # 3) Helper to pick an unused TCP port
   find_available_port() {
     local p
@@ -51,10 +61,11 @@ ollama() {
       --nv \
       --contain \
       --home "${S}:/root" \
-      --env OLLAMA_MODELS="/root/models" \
+      --env OLLAMA_MODELS="$OLLAMA_MODELS" \
       --env OLLAMA_HOST="http://${BIND}" \
       --env OLLAMA_PORT="${PORT}" \
-      ollama_0312.sif serve "$@"
+      --bind "$SHARED_MODELS:/mnt/SHARED-AREA/ollama_models:ro" \
+      ollama.sif serve "$@"
   fi
 
   # 5) Otherwise, act as a client: read recorded host+port and forward command
@@ -68,12 +79,11 @@ ollama() {
     --nv \
     --contain \
     --home "${S}:/root" \
-    --env OLLAMA_MODELS="/root/models" \
+    --env OLLAMA_MODELS="$OLLAMA_MODELS" \
     --env OLLAMA_HOST="${ENV_HOST}" \
     --env OLLAMA_PORT="${PORT}" \
-    ollama_0312.sif "$@"
+    --bind "$SHARED_MODELS:/mnt/SHARED-AREA/ollama_models:ro" \
+    ollama.sif "$@"
 }
-
 # Export so that subshells (e.g. slurm scripts) will inherit it
 export -f ollama
-
