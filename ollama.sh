@@ -14,6 +14,7 @@ ollama() {
   # 2) Prepare your scratch tree for keys, models, host & port
   S="${SCRATCH_BASE}/ollama"
   mkdir -p "${S}"/{.ollama,models}
+  LOG_FILE="${S}/ollama.log"
   PORT_FILE="${S}/port.txt"
   HOST_FILE="${S}/host.txt"
 
