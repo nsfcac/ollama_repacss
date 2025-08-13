@@ -38,6 +38,5 @@ fi
 sleep 3
 
 # Step 3: Start ollama serve in background
-ollama serve &
-
-echo "Ollama setup complete!"
+ollama serve > "${SCRATCH_BASE}/ollama/ollama.log" 2>&1 &
+echo "Ollama server started in background"
